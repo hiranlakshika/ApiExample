@@ -1,5 +1,6 @@
 package com.saegis.apiexample.view_model
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.saegis.apiexample.service.RetroService
 import com.saegis.apiexample.service.RetrofitInstance
@@ -9,19 +10,23 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivityViewModel : ViewModel() {
-    fun getUserList(): List<User>? {
+    var loadUserData: MutableLiveData<List<User>?> = MutableLiveData()
+
+    fun getLoadUserObserver(): MutableLiveData<List<User>?> {
+        return loadUserData
+    }
+
+    fun getUserList() {
         val retroInstance = RetrofitInstance.getRetrofitInstance().create(RetroService::class.java)
         val call = retroInstance.getUsers()
-        var users: List<User>? = null
         call.enqueue(object : Callback<List<User>?> {
             override fun onResponse(call: Call<List<User>?>, response: Response<List<User>?>) {
-                users = response.body()
+                loadUserData.postValue(response.body())
             }
 
             override fun onFailure(call: Call<List<User>?>, t: Throwable) {
-                users = null
+                loadUserData.postValue(null)
             }
         })
-        return users
     }
 }
