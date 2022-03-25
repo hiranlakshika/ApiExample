@@ -1,4 +1,4 @@
-package com.saegis.apiexample
+package com.saegis.apiexample.service
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
